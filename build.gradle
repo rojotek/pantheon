@@ -66,6 +66,7 @@ allprojects {
   apply plugin: 'java-library'
   apply plugin: 'io.spring.dependency-management'
   apply plugin: 'jacoco'
+  apply plugin: 'maven-publish'
   apply plugin: 'net.ltgt.errorprone'
   apply from: "${rootDir}/gradle/versions.gradle"
   apply from: "${rootDir}/gradle/check-licenses.gradle"
@@ -230,6 +231,9 @@ allprojects {
       options.addStringOption('Xwerror', '-html5')
     }
     options.encoding = 'UTF-8'
+  }
+  jar {
+    destinationDir = file("${rootProject.buildDir}/libs")
   }
 
 }
@@ -488,6 +492,30 @@ release {
 
 apply plugin: 'com.jfrog.bintray'
 
+publishing {
+  publications {
+    mavenArtifact(MavenPublication) {
+      from components.java
+      pom.withXml {
+        asNode().children().last() + {
+          resolveStrategy = Closure.DELEGATE_FIRST
+          name 'Pantheon'
+          description 'A java implementation of a Enterprise Ethereum Client.'
+          url 'https://github.com/ConsenSys/pantheon'
+          scm { url 'https://github.com/ConsenSys/pantheon' }
+          licenses {
+            license {
+              name 'The Apache Software License, Version 2.0'
+              url 'http://www.apache.org/license/LICENSE-2.0.txt'
+              distribution 'repo'
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 bintray {
   user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
   key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
@@ -499,6 +527,7 @@ bintray {
   }
 
   publish = true
+  publications = ['mavenArtifact']
 
   pkg {
     repo = 'pegasys-repo'
@@ -519,3 +548,4 @@ bintray {
 afterReleaseBuild.dependsOn bintrayUpload
 bintrayUpload.mustRunAfter(distTar)
 bintrayUpload.mustRunAfter(distZip)
+deploy.dependsOn bintrayUpload
