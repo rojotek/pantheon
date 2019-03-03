@@ -322,8 +322,6 @@ subprojects {
   }
 }
 
-jar { enabled = false }
-
 apply plugin: 'application'
 mainClassName = "tech.pegasys.pantheon.Pantheon"
 applicationDefaultJvmArgs = [
@@ -544,7 +542,21 @@ bintray {
     }
   }
 }
+configurations { childJars }
 
+dependencies {
+  subprojects.each {
+    childJars project(it.path)
+  }
+}
+
+jar {
+  baseName = 'pantheon'
+  manifest { attributes 'Main-Class': 'tech.pegasys.pantheon.Pantheon' }
+  subprojects.each { subproject ->
+    from subproject.sourceSets.main.output
+  }
+}
 afterReleaseBuild.dependsOn bintrayUpload
 bintrayUpload.mustRunAfter(distTar)
 bintrayUpload.mustRunAfter(distZip)
