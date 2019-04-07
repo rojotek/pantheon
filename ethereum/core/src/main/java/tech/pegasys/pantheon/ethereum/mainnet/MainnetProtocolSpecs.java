@@ -60,8 +60,9 @@ public abstract class MainnetProtocolSpecs {
 
   private MainnetProtocolSpecs() {}
 
-  public static ProtocolSpecBuilder<Void> frontierDefinition(final OptionalInt contractSizeLimit) {
-    int frontierContractSizeLimit = contractSizeLimit.orElse(FRONTIER_CONTRACT_SIZE_LIMIT);
+  public static ProtocolSpecBuilder<Void> frontierDefinition(
+      final OptionalInt configContractSizeLimit) {
+    int contractSizeLimit = configContractSizeLimit.orElse(FRONTIER_CONTRACT_SIZE_LIMIT);
     return new ProtocolSpecBuilder<Void>()
         .gasCalculator(FrontierGasCalculator::new)
         .evmBuilder(MainnetEvmRegistries::frontier)
@@ -70,7 +71,7 @@ public abstract class MainnetProtocolSpecs {
         .contractCreationProcessorBuilder(
             (gasCalculator, evm) ->
                 new MainnetContractCreationProcessor(
-                    gasCalculator, evm, false, frontierContractSizeLimit, 0))
+                    gasCalculator, evm, false, contractSizeLimit, 0))
         .transactionValidatorBuilder(
             gasCalculator -> new MainnetTransactionValidator(gasCalculator, false))
         .transactionProcessorBuilder(
@@ -110,15 +111,16 @@ public abstract class MainnetProtocolSpecs {
         .name("Frontier");
   }
 
-  public static ProtocolSpecBuilder<Void> homesteadDefinition(final OptionalInt contractSizeLimit) {
-    int frontierContractSizeLimit = contractSizeLimit.orElse(FRONTIER_CONTRACT_SIZE_LIMIT);
-    return frontierDefinition(contractSizeLimit)
+  public static ProtocolSpecBuilder<Void> homesteadDefinition(
+      final OptionalInt configContractSizeLimit) {
+    int contractSizeLimit = configContractSizeLimit.orElse(FRONTIER_CONTRACT_SIZE_LIMIT);
+    return frontierDefinition(configContractSizeLimit)
         .gasCalculator(HomesteadGasCalculator::new)
         .evmBuilder(MainnetEvmRegistries::homestead)
         .contractCreationProcessorBuilder(
             (gasCalculator, evm) ->
                 new MainnetContractCreationProcessor(
-                    gasCalculator, evm, true, frontierContractSizeLimit, 0))
+                    gasCalculator, evm, true, contractSizeLimit, 0))
         .transactionValidatorBuilder(
             gasCalculator -> new MainnetTransactionValidator(gasCalculator, true))
         .difficultyCalculator(MainnetDifficultyCalculators.HOMESTEAD)
@@ -158,9 +160,9 @@ public abstract class MainnetProtocolSpecs {
   }
 
   public static ProtocolSpecBuilder<Void> spuriousDragonDefinition(
-      final int chainId, final OptionalInt contractSizeLimit) {
-    final int spuriousDragonContractSizeLimit =
-        contractSizeLimit.orElse(SPURIOUS_DRAGON_CONTRACT_SIZE_LIMIT);
+      final int chainId, final OptionalInt configContractSizeLimit) {
+    final int contractSizeLimit =
+        configContractSizeLimit.orElse(SPURIOUS_DRAGON_CONTRACT_SIZE_LIMIT);
     return tangerineWhistleDefinition(OptionalInt.empty())
         .gasCalculator(SpuriousDragonGasCalculator::new)
         .messageCallProcessorBuilder(
@@ -175,7 +177,7 @@ public abstract class MainnetProtocolSpecs {
                     gasCalculator,
                     evm,
                     true,
-                    spuriousDragonContractSizeLimit,
+                    contractSizeLimit,
                     1,
                     SPURIOUS_DRAGON_FORCE_DELETE_WHEN_EMPTY_ADDRESSES))
         .transactionValidatorBuilder(
