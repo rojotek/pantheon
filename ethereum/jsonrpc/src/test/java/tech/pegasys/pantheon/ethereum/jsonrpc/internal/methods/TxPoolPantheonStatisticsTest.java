@@ -53,9 +53,9 @@ public class TxPoolPantheonStatisticsTest {
     final JsonRpcRequest request =
         new JsonRpcRequest(JSON_RPC_VERSION, TXPOOL_PENDING_TRANSACTIONS_METHOD, new Object[] {});
 
-    TransactionInfo local = createTransactionInfo(true);
-    TransactionInfo secondLocal = createTransactionInfo(true);
-    TransactionInfo remote = createTransactionInfo(false);
+    final TransactionInfo local = createTransactionInfo(true);
+    final TransactionInfo secondLocal = createTransactionInfo(true);
+    final TransactionInfo remote = createTransactionInfo(false);
     when(pendingTransactions.maxSize()).thenReturn(123L);
     when(pendingTransactions.getTransactionInfo())
         .thenReturn(Sets.newHashSet(local, secondLocal, remote));
@@ -69,7 +69,7 @@ public class TxPoolPantheonStatisticsTest {
   }
 
   private TransactionInfo createTransactionInfo(final boolean local) {
-    TransactionInfo transactionInfo = mock(TransactionInfo.class);
+    final TransactionInfo transactionInfo = mock(TransactionInfo.class);
     when(transactionInfo.isReceivedFromLocalSource()).thenReturn(local);
     return transactionInfo;
   }

@@ -40,7 +40,7 @@ public class TxPoolPantheonStatistics implements JsonRpcMethod {
   }
 
   private PendingTransactionsStatisticsResult statistics() {
-    Set<TransactionInfo> transactionInfo = pendingTransactions.getTransactionInfo();
+    final Set<TransactionInfo> transactionInfo = pendingTransactions.getTransactionInfo();
     final long localCount =
         transactionInfo.stream().filter(TransactionInfo::isReceivedFromLocalSource).count();
     final long remoteCount = transactionInfo.size() - localCount;
