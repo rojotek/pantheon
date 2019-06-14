@@ -43,7 +43,7 @@ dependencies {
   implementation project(':ethereum:rlp')
   implementation project(':metrics:core')
   implementation project(':services:kvstore')
-
+  implementation project(':stratum')
   implementation 'com.graphql-java:graphql-java'
   implementation 'com.google.guava:guava'
   implementation 'info.picocli:picocli'

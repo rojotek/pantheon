@@ -74,6 +74,7 @@ import tech.pegasys.pantheon.ethereum.permissioning.TransactionSmartContractPerm
 import tech.pegasys.pantheon.ethereum.permissioning.account.AccountPermissioningController;
 import tech.pegasys.pantheon.ethereum.permissioning.node.NodePermissioningController;
 import tech.pegasys.pantheon.ethereum.transaction.TransactionSimulator;
+import tech.pegasys.pantheon.ethereum.stratum.NettyStratumController;
 import tech.pegasys.pantheon.ethereum.worldstate.WorldStateArchive;
 import tech.pegasys.pantheon.metrics.MetricsSystem;
 import tech.pegasys.pantheon.metrics.prometheus.MetricsConfiguration;
@@ -418,7 +419,7 @@ public class RunnerBuilder {
     if (metricsConfiguration.isEnabled() || metricsConfiguration.isPushEnabled()) {
       metricsService = Optional.of(createMetricsService(vertx, metricsConfiguration));
     }
-
+    final NettyStratumController nettyStratumController = new NettyStratumController();
     return new Runner(
         vertx,
         networkRunner,

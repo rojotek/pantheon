@@ -12,6 +12,8 @@
  */
 package tech.pegasys.pantheon.ethereum.jsonrpc.internal;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Feature;
 import tech.pegasys.pantheon.ethereum.jsonrpc.internal.exception.InvalidJsonRpcRequestException;
 
 import java.util.Arrays;
@@ -64,6 +66,7 @@ public class JsonRpcRequest {
   }
 
   @JsonInclude(Include.NON_NULL)
+  @JsonFormat(with = Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
   @JsonGetter("params")
   public Object[] getParams() {
     return params;
